@@ -1,1 +1,9 @@
 https://gbdev.io/pandocs/
+
+GameBoy Opcode Summary
+
+0000 - 3FFF: ROM del juego (lo que lees del archivo .gb).
+
+8000 - 9FFF: VRAM (donde vive lo que se va a dibujar).
+
+FF00 - FF7F: Registros de hardware (aquí es donde, al escribir un bit, suena una nota o se mueve un sprite).
