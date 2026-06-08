@@ -1,28 +1,39 @@
-//main loop here
-
+#include "include/emu.h"
 #include <stdio.h>
-#include <stdlib.h>
 
-typedef struct {
-    //CPU
-    uint8_t registers[8]; //A, B, C, D, E, F, H, L
-    //Memory
-    uint8_t memory[0x10000]; //64 KB
+static emu_context ctx;
 
-    //PPU (Grphics..)
-
-    int running;
-    int cycles; 
-} GameBoy;
-
-GameBoy* gb_init() {
-    Gameboy* gb
+emu_context *emu_get_context() {
+    return &ctx;
 }
 
-void main() {
+int emu_run(int argc, char **argv) {
+    if (argc < 2) {
+        fprintf(stderr, "Usage: emu <rom_file>\n");
+        return -1;
+    }
 
-    char[] game = game_menu_selector();
-    load_game(game);
+    // TODO: cart_load(argv[1]);
+    // TODO: cpu_init();
+    // TODO: bus_init();
 
+    ctx.running = true;
+    ctx.paused = false;
+    ctx.ticks = 0;
 
+    while (ctx.running) {
+        if (ctx.paused) {
+            continue;
+        }
+
+        // TODO: cpu_step();
+
+        ctx.ticks++;
+    }
+
+    return 0;
+}
+
+int main(int argc, char **argv) {
+    return emu_run(argc, argv);
 }
