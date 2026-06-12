@@ -1,7 +1,9 @@
 #include "common.h"
 
 #pragma once
-
+/** 
+ *  We will define the cart memory structure
+ */
 typedef struct {
     u8 entry[4];
     u8 nintendo_logo[48]; 
