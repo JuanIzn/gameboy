@@ -24,7 +24,7 @@ typedef struct {
     char      *filename;
     u8        *rom_data;  // full contents of the .gb file
     u32        rom_size;  // actual file size in bytes
-    rom_header *header;   // points to rom_data + 0x0100
+    rom_header *header;   // points to rom_data + 0x0100, where the header starts
 } cart_context;
 
 // Loads the .gb file into memory and validates the header.
