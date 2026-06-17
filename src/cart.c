@@ -37,6 +37,8 @@ bool cart_load(char *path) {
 
     // validate header checksum
     if (!validate_checksum()) {
+        free(ctx.rom_data);
+        ctx.rom_data = NULL;
         printf("ERROR: invalid header checksum\n");
         return false;
     }

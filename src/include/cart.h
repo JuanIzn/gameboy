@@ -32,4 +32,6 @@ typedef struct {
 bool cart_load(char *path);
 
 // Reads a byte from the cartridge given a memory bus address.
+// The address is u16 because the Game Boy address space spans
+// 0x0000 - 0xFFFF (65536 positions), which needs 16 bits. It returns just a single byte.
 u8 cart_read(u16 address);
