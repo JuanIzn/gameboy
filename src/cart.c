@@ -53,3 +53,11 @@ bool cart_load(char *path) {
 u8 cart_read(u16 address) {
     return ctx.rom_data[address];
 }
+
+void cart_unload() {
+    if (ctx.rom_data) {
+        free(ctx.rom_data);
+        ctx.rom_data = NULL;
+        ctx.header = NULL;
+    }
+}

@@ -1,4 +1,5 @@
 #include "include/emu.h"
+#include "include/cart.h"
 #include <stdio.h>
 
 static emu_context ctx;
@@ -13,7 +14,11 @@ int emu_run(int argc, char **argv) {
         return -1;
     }
 
-    // TODO: cart_load(argv[1]);
+    if (!cart_load(argv[1])) {
+        fprintf(stderr, "Failed to load cartridge: %s\n", argv[1]);
+        return -1;
+    }
+
     // TODO: cpu_init();
     // TODO: bus_init();
 
@@ -21,16 +26,16 @@ int emu_run(int argc, char **argv) {
     ctx.paused = false;
     ctx.ticks = 0;
 
-    while (ctx.running) {
-        if (ctx.paused) {
-            continue;
-        }
+    // For now we just verify the cartridge loaded; no CPU loop yet.
+    // while (ctx.running) {
+    //     if (ctx.paused) {
+    //         continue;
+    //     }
+    //     // TODO: cpu_step();
+    //     ctx.ticks++;
+    // }
 
-        // TODO: cpu_step();
-
-        ctx.ticks++;
-    }
-
+    cart_unload();
     return 0;
 }
 
