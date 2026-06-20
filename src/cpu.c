@@ -15,6 +15,12 @@ void cpu_init() {
     ctx.regs.pc = 0x0100;   // execution starts right after the cartridge header
 }
 
+void cpu_step() {
+    u8 opcode = bus_read(ctx.regs.pc);   // FETCH: read the byte PC points to
+    ctx.regs.pc++;                       // advance PC to the next byte
+    execute(opcode);                     // DECODE + EXECUTE
+}
+
 // Decodes and executes one opcode. For now it only knows NOP; the full
 // instruction set (the big switch) will grow here as the next step.
 static void execute(u8 opcode) {
@@ -28,8 +34,4 @@ static void execute(u8 opcode) {
     }
 }
 
-void cpu_step() {
-    u8 opcode = bus_read(ctx.regs.pc);   // FETCH: read the byte PC points to
-    ctx.regs.pc++;                       // advance PC to the next byte
-    execute(opcode);                     // DECODE + EXECUTE
-}
+
