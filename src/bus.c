@@ -1,7 +1,14 @@
 #include "include/bus.h"
 #include "include/cart.h"
+#include <string.h>
 
 static bus_context ctx;
+
+void bus_init() {
+    memset(ctx.wram, 0, sizeof(ctx.wram));
+    memset(ctx.hram, 0, sizeof(ctx.hram));
+    ctx.ie_register = 0;
+}
 
 // The checks cascade: each range only needs its UPPER bound, because every
 // earlier range has already returned. So "<= 0x9FFF" really means 0x8000-0x9FFF.

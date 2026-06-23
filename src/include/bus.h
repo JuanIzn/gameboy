@@ -8,6 +8,8 @@ typedef struct {
     u8 ie_register;    // 0xFFFF, interrupt enable (moves to interrupts later)
 } bus_context;
 
+void bus_init();
+
 // Reads a byte from anywhere in the 16-bit address space.
 // Routes the address to its owner (cartridge, WRAM, PPU...).
 u8 bus_read(u16 address);

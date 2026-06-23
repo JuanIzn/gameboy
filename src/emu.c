@@ -1,5 +1,7 @@
 #include "include/emu.h"
 #include "include/cart.h"
+#include "include/cpu.h"
+#include "include/bus.h"
 #include <stdio.h>
 
 static emu_context ctx;
@@ -19,21 +21,21 @@ int emu_run(int argc, char **argv) {
         return -1;
     }
 
-    // TODO: cpu_init();
-    // TODO: bus_init();
+    cpu_init();
+    bus_init();
 
     ctx.running = true;
     ctx.paused = false;
     ctx.ticks = 0;
 
     // For now we just verify the cartridge loaded; no CPU loop yet.
-    // while (ctx.running) {
-    //     if (ctx.paused) {
-    //         continue;
-    //     }
-    //     // TODO: cpu_step();
-    //     ctx.ticks++;
-    // }
+    while (ctx.running) {
+        if (ctx.paused) {
+            continue;
+        }
+        cpu_step();
+        ctx.ticks++;
+    }
 
     cart_unload();
     return 0;
