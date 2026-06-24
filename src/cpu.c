@@ -25,6 +25,24 @@ void cpu_step() {
     execute(opcode);                     // DECODE + EXECUTE
 }
 
+// --- Flag helpers -----------------------------------------------------------
+// Register F holds 4 flags in bits 4-7 (see FLAG_* in cpu.h). These read and
+// write a single flag bit without touching the others.
+
+// Returns true if the given flag bit is set in F.
+static bool get_flag(u8 flag) {
+    return (ctx.regs.f >> flag) & 1;
+}
+
+// Sets the given flag bit to 1 (value true) or 0 (value false).
+static void set_flag(u8 flag, bool value) {
+    if (value) {
+        ctx.regs.f |= (1 << flag);    // OR with a 1 in that position -> set it
+    } else {
+        ctx.regs.f &= ~(1 << flag);   // AND with a 0 in that position -> clear it
+    }
+}
+
 // Decodes and executes one opcode. For now it only knows NOP; the full
 // instruction set (the big switch) will grow here as the next step.
 static void execute(u8 opcode) {
@@ -38,6 +56,11 @@ static void execute(u8 opcode) {
             u8 hi = bus_read(ctx.regs.pc);   // then high byte
             ctx.regs.pc++;
             ctx.regs.pc = (hi << 8) | lo;    // combine both into the target
+            break;
+        }
+
+        case 0xFE: {
+            
             break;
         }
 
