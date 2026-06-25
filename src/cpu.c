@@ -59,8 +59,14 @@ static void execute(u8 opcode) {
             break;
         }
 
-        case 0xFE: {
-            
+        case 0xFE: {   // CP n: compare A with the next byte (A - n, result discarded)
+            u8 n = bus_read(ctx.regs.pc);
+            ctx.regs.pc++;
+            u8 a = ctx.regs.a;
+            set_flag(FLAG_Z, a == n);                    // equal -> result would be 0
+            set_flag(FLAG_N, true);                      // CP is a subtraction
+            set_flag(FLAG_H, (a & 0x0F) < (n & 0x0F));   // borrow from bit 4
+            set_flag(FLAG_C, a < n);                      // borrow (A < n)
             break;
         }
 
