@@ -28,7 +28,6 @@ int emu_run(int argc, char **argv) {
     ctx.paused = false;
     ctx.ticks = 0;
 
-    // For now we just verify the cartridge loaded; no CPU loop yet.
     while (ctx.running) {
         if (ctx.paused) {
             continue;

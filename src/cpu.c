@@ -4,8 +4,6 @@
 
 static cpu_context ctx;
 
-// Forward declaration: lets cpu_step call execute even though the full
-// definition lives at the bottom of the file (it will be the longest).
 static void execute(u8 opcode);
 
 // Power-up register values for the original DMG Game Boy.
@@ -20,9 +18,9 @@ void cpu_init() {
 }
 
 void cpu_step() {
-    u8 opcode = bus_read(ctx.regs.pc);   // FETCH: read the byte PC points to
-    ctx.regs.pc++;                       // advance PC to the next byte
-    execute(opcode);                     // DECODE + EXECUTE
+    u8 opcode = bus_read(ctx.regs.pc);   
+    ctx.regs.pc++;                       
+    execute(opcode);                    
 }
 
 // --- Flag helpers -----------------------------------------------------------
@@ -37,25 +35,36 @@ static bool get_flag(u8 flag) {
 // Sets the given flag bit to 1 (value true) or 0 (value false).
 static void set_flag(u8 flag, bool value) {
     if (value) {
-        ctx.regs.f |= (1 << flag);    // OR with a 1 in that position -> set it
+        ctx.regs.f |= (1 << flag);   
     } else {
-        ctx.regs.f &= ~(1 << flag);   // AND with a 0 in that position -> clear it
+        ctx.regs.f &= ~(1 << flag);  
     }
 }
 
-// Decodes and executes one opcode. For now it only knows NOP; the full
-// instruction set (the big switch) will grow here as the next step.
+
+// Optables I'm usign to fill this method: https://gbdev.io/gb-opcodes/optables/
 static void execute(u8 opcode) {
     switch (opcode) {
         case 0x00:   // NOP: do nothing
             break;
 
         case 0xC3: {   // JP nn: jump to the 16-bit address that follows
-            u8 lo = bus_read(ctx.regs.pc);   // low byte first (little-endian)
+            u8 lo = bus_read(ctx.regs.pc);   
             ctx.regs.pc++;
-            u8 hi = bus_read(ctx.regs.pc);   // then high byte
+            u8 hi = bus_read(ctx.regs.pc);   
             ctx.regs.pc++;
-            ctx.regs.pc = (hi << 8) | lo;    // combine both into the target
+            ctx.regs.pc = (hi << 8) | lo;  
+            break;
+        }
+
+        case 0xC2: { // JP NZ, nn: Jumps if not zero the Z bit.
+            u8 lo = bus_read(ctx.regs.pc);
+            ctx.regs.pc++;
+            u8 hi = bus_read(ctx.regs.pc);
+            ctx.regs.pc++;
+            if (!get_flag(FLAG_Z)) {
+                ctx.regs.pc = (hi << 8) | lo;
+            }
             break;
         }
 
@@ -63,10 +72,10 @@ static void execute(u8 opcode) {
             u8 n = bus_read(ctx.regs.pc);
             ctx.regs.pc++;
             u8 a = ctx.regs.a;
-            set_flag(FLAG_Z, a == n);                    // equal -> result would be 0
-            set_flag(FLAG_N, true);                      // CP is a subtraction
-            set_flag(FLAG_H, (a & 0x0F) < (n & 0x0F));   // borrow from bit 4
-            set_flag(FLAG_C, a < n);                      // borrow (A < n)
+            set_flag(FLAG_Z, a == n);                    
+            set_flag(FLAG_N, true);                      
+            set_flag(FLAG_H, (a & 0x0F) < (n & 0x0F));  
+            set_flag(FLAG_C, a < n);                    
             break;
         }
 
