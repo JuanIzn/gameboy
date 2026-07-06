@@ -68,6 +68,44 @@ static void execute(u8 opcode) {
             break;
         }
 
+        case 0xCA: { // JP Z, nn: Jumps if the Z bit is set.
+            u8 lo = bus_read(ctx.regs.pc);
+            ctx.regs.pc++;
+            u8 hi = bus_read(ctx.regs.pc);
+            ctx.regs.pc++;
+            if (get_flag(FLAG_Z)) {
+                ctx.regs.pc = (hi << 8) | lo;
+            }
+            break;
+        }
+
+        case 0xD2: { // JP NC, nn: Jumps if not carry the C bit.
+            u8 lo = bus_read(ctx.regs.pc);
+            ctx.regs.pc++;
+            u8 hi = bus_read(ctx.regs.pc);
+            ctx.regs.pc++;
+            if (!get_flag(FLAG_C)) {
+                ctx.regs.pc = (hi << 8) | lo;
+            }
+            break;
+        }
+
+        case 0xDA: { // JP C, nn: Jumps if the C bit is set.
+            u8 lo = bus_read(ctx.regs.pc);
+            ctx.regs.pc++;
+            u8 hi = bus_read(ctx.regs.pc);
+            ctx.regs.pc++;
+            if (get_flag(FLAG_C)) {
+                ctx.regs.pc = (hi << 8) | lo;
+            }
+            break;
+        }
+
+        case 0xE9: {   // JP HL: jump to the address held in HL (not a memory read at HL)
+            ctx.regs.pc = ctx.regs.hl;
+            break;
+        }
+
         case 0xFE: {   // CP n: compare A with the next byte (A - n, result discarded)
             u8 n = bus_read(ctx.regs.pc);
             ctx.regs.pc++;

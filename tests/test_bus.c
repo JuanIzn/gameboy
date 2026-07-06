@@ -33,29 +33,29 @@ int main(int argc, char **argv) {
 
     printf("\nRunning bus tests:\n");
 
-    // 1. Cartridge routing: a ROM address must match cart_read directly.
+    // Cartridge routing: a ROM address must match cart_read directly.
     check("bus_read(0x0100) routes to cartridge",
           bus_read(0x0100) == cart_read(0x0100));
     check("bus_read(0x0134) routes to cartridge",
           bus_read(0x0134) == cart_read(0x0134));
 
-    // 2. WRAM round-trip: write then read back the same value.
+    // WRAM round-trip: write then read back the same value.
     bus_write(0xC000, 0x42);
     check("WRAM round-trip at 0xC000", bus_read(0xC000) == 0x42);
     bus_write(0xDFFF, 0x99);
     check("WRAM round-trip at 0xDFFF (last byte)", bus_read(0xDFFF) == 0x99);
 
-    // 3. Echo RAM mirrors WRAM: 0xE000 should reflect 0xC000.
+    // Echo RAM mirrors WRAM: 0xE000 should reflect 0xC000.
     bus_write(0xC000, 0x7A);
     check("Echo RAM 0xE000 mirrors WRAM 0xC000", bus_read(0xE000) == 0x7A);
 
-    // 4. HRAM round-trip.
+    // HRAM round-trip.
     bus_write(0xFF80, 0x55);
     check("HRAM round-trip at 0xFF80", bus_read(0xFF80) == 0x55);
     bus_write(0xFFFE, 0x11);
     check("HRAM round-trip at 0xFFFE (last byte)", bus_read(0xFFFE) == 0x11);
 
-    // 5. IE register (0xFFFF) is separate from HRAM.
+    // IE register (0xFFFF) is separate from HRAM.
     bus_write(0xFFFF, 0x1F);
     check("IE register round-trip at 0xFFFF", bus_read(0xFFFF) == 0x1F);
 
