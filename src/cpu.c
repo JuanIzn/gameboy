@@ -48,6 +48,8 @@ static void execute(u8 opcode) {
         case 0x00:   // NOP: do nothing
             break;
 
+        // --- JP ---
+
         case 0xC3: {   // JP nn: jump to the 16-bit address that follows
             u8 lo = bus_read(ctx.regs.pc);   
             ctx.regs.pc++;
@@ -106,6 +108,8 @@ static void execute(u8 opcode) {
             break;
         }
 
+        // --- CP ---
+
         case 0xFE: {   // CP n: compare A with the next byte (A - n, result discarded)
             u8 n = bus_read(ctx.regs.pc);
             ctx.regs.pc++;
@@ -114,6 +118,16 @@ static void execute(u8 opcode) {
             set_flag(FLAG_N, true);                      
             set_flag(FLAG_H, (a & 0x0F) < (n & 0x0F));  
             set_flag(FLAG_C, a < n);                    
+            break;
+        }
+
+        case 0xB8: { // CP A, B
+            u8 a = ctx.regs.a;
+            u8 b = ctx.regs.b;
+            set_flag(FLAG_Z, a == b);                    
+            set_flag(FLAG_N, true);                      
+            set_flag(FLAG_H, (a & 0x0F) < (b & 0x0F));  
+            set_flag(FLAG_C, a < b);                    
             break;
         }
 
